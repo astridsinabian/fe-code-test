@@ -1,10 +1,13 @@
 <template>
   <div>
     <button class="home-button" @click="onDisplayPersonsList">Visa personer</button>
+    <button class="home-button" @click="onDisplayFamiliesList">Visa familjer</button>
     <button class="home-button" @click="onDisplayPersonsForm">Skapa ny person</button>
   </div>
 
   <Persons v-if="shouldDisplayPersonsList" :persons="persons" @remove-person="onRemovePerson" />
+
+  <Families v-if="shouldDisplayFamiliesList" :families="families" />
 
   <PersonsForm v-if="shouldDisplayPersonsForm" :emptyPerson="emptyPerson" @save-form="onSaveForm" />
 </template>
@@ -17,14 +20,20 @@ import { IPerson } from "@/components/person/types";
 import Persons from "@/components/person/Persons.vue";
 import PersonsForm from "@/components/person/PersonsForm.vue";
 
+import Families from "@/components/family/Families.vue";
+import { IFamily } from "@/components/family/types";
+
 export default defineComponent({
   components: {
     Persons,
+    Families,
     PersonsForm,
   },
   setup() {
     const persons = ref<IPerson[]>([]);
+    const families = ref<IFamily[]>([]);
     const shouldDisplayPersonsList = ref<boolean>(false);
+    const shouldDisplayFamiliesList = ref<boolean>(false);
     const shouldDisplayPersonsForm = ref<boolean>(false);
     const emptyPerson = ref<IPerson>({
       firstName: "",
@@ -38,6 +47,15 @@ export default defineComponent({
       try {
         const response = await axios.get("http://so.fthou.se:8080/api/persons");
         persons.value = response.data;
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    async function getFamilies(): Promise<void> {
+      try {
+        const response = await axios.get("http://so.fthou.se:8080/api/families");
+        families.value = response.data;
       } catch (error) {
         console.error(error);
       }
@@ -64,11 +82,20 @@ export default defineComponent({
     function onDisplayPersonsForm(): void {
       shouldDisplayPersonsForm.value = !shouldDisplayPersonsForm.value;
       shouldDisplayPersonsList.value = false;
+      shouldDisplayFamiliesList.value = false;
     }
 
     async function onDisplayPersonsList(): Promise<void> {
       await getPersons();
       shouldDisplayPersonsList.value = !shouldDisplayPersonsList.value;
+      shouldDisplayPersonsForm.value = false;
+      shouldDisplayFamiliesList.value = false;
+    }
+
+    async function onDisplayFamiliesList(): Promise<void> {
+      await getFamilies();
+      shouldDisplayFamiliesList.value = !shouldDisplayFamiliesList.value;
+      shouldDisplayPersonsList.value = false;
       shouldDisplayPersonsForm.value = false;
     }
 
@@ -82,11 +109,14 @@ export default defineComponent({
 
     return {
       persons,
+      families,
       emptyPerson,
       shouldDisplayPersonsList,
+      shouldDisplayFamiliesList,
       shouldDisplayPersonsForm,
       onDisplayPersonsForm,
       onDisplayPersonsList,
+      onDisplayFamiliesList,
       onSaveForm,
       onRemovePerson,
     };
