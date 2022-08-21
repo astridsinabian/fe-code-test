@@ -30,6 +30,7 @@ a {
 }
 
 .app-header-router-link {
+  font-size: 16px;
   color: #ffffff;
   transition: 300ms;
   font-weight: 700;

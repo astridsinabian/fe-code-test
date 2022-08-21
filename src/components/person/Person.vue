@@ -1,10 +1,9 @@
 <template>
-  <div class="person">
-    <div>{{ person.firstName }} {{ person.lastName }}</div>
-    <div>{{ person.family }}</div>
-    <div>{{ person.phoneNumber }}</div>
-    <div>{{ person.address }}</div>
-  </div>
+  <td class="person-table-data-cell">{{ person.firstName }}</td>
+  <td class="person-table-data-cell">{{ person.lastName }}</td>
+  <td class="person-table-data-cell">{{ person.phoneNumber }}</td>
+  <td class="person-table-data-cell">{{ person.address }}</td>
+  <td class="person-table-data-cell">{{ person.family }}</td>
 </template>
 
 <script lang="ts">
@@ -23,7 +22,8 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.person {
+.person-table-data-cell {
   padding: 10px;
+  min-width: 150px;
 }
 </style>

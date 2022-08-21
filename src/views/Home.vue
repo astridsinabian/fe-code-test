@@ -1,26 +1,33 @@
 <template>
-  <Persons :persons="persons" />
+  <div>
+    <button class="home-button" @click="onDisplayPersonsList">Visa personer</button>
+    <button class="home-button" @click="onDisplayPersonsForm">Skapa ny person</button>
+  </div>
+
+  <Persons v-if="shouldDisplayPersonsList" :persons="persons" />
+
+  <PersonsForm v-if="shouldDisplayPersonsForm" />
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, ref } from "vue";
 import axios from "axios";
 
 import { IPerson } from "@/components/person/types";
 import Persons from "@/components/person/Persons.vue";
+import PersonsForm from "@/components/person/PersonsForm.vue";
 
 export default defineComponent({
   components: {
     Persons,
+    PersonsForm,
   },
   setup() {
     const persons = ref<IPerson[]>([]);
+    const shouldDisplayPersonsList = ref<boolean>(false);
+    const shouldDisplayPersonsForm = ref<boolean>(false);
 
-    onMounted(async () => {
-      await getPersons();
-    });
-
-    async function getPersons() {
+    async function getPersons(): Promise<void> {
       try {
         const response = await axios.get("http://so.fthou.se:8080/api/persons");
         persons.value = response.data;
@@ -29,9 +36,42 @@ export default defineComponent({
       }
     }
 
-    return { persons };
+    function onDisplayPersonsForm(): void {
+      shouldDisplayPersonsForm.value = !shouldDisplayPersonsForm.value;
+      shouldDisplayPersonsList.value = false;
+    }
+
+    async function onDisplayPersonsList(): Promise<void> {
+      await getPersons();
+      shouldDisplayPersonsList.value = !shouldDisplayPersonsList.value;
+      shouldDisplayPersonsForm.value = false;
+    }
+
+    return {
+      persons,
+      shouldDisplayPersonsList,
+      shouldDisplayPersonsForm,
+      onDisplayPersonsForm,
+      onDisplayPersonsList,
+    };
   },
 });
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.home-button {
+  padding: 15px 10px;
+  color: #ffffff;
+  background-color: #2b365b;
+  border: 1px solid #2b365b;
+  margin-right: 1px;
+  transition: 300ms;
+  font-size: 16px;
+
+  &:focus,
+  &:hover {
+    opacity: 0.7;
+    cursor: pointer;
+  }
+}
+</style>
