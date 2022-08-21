@@ -6,7 +6,7 @@
 
   <Persons v-if="shouldDisplayPersonsList" :persons="persons" />
 
-  <PersonsForm v-if="shouldDisplayPersonsForm" />
+  <PersonsForm v-if="shouldDisplayPersonsForm" :emptyPerson="emptyPerson" @save-form="onSaveForm" />
 </template>
 
 <script lang="ts">
@@ -26,11 +26,27 @@ export default defineComponent({
     const persons = ref<IPerson[]>([]);
     const shouldDisplayPersonsList = ref<boolean>(false);
     const shouldDisplayPersonsForm = ref<boolean>(false);
+    const emptyPerson = ref<IPerson>({
+      firstName: "",
+      lastName: "",
+      address: "",
+      phoneNumber: "",
+      family: "",
+    });
 
     async function getPersons(): Promise<void> {
       try {
         const response = await axios.get("http://so.fthou.se:8080/api/persons");
         persons.value = response.data;
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    async function addPerson(newPerson: IPerson): Promise<void> {
+      try {
+        await axios.post("http://so.fthou.se:8080/api/person", newPerson);
+        await getPersons();
       } catch (error) {
         console.error(error);
       }
@@ -47,12 +63,18 @@ export default defineComponent({
       shouldDisplayPersonsForm.value = false;
     }
 
+    async function onSaveForm(newPerson: IPerson): Promise<void> {
+      await addPerson(newPerson);
+    }
+
     return {
       persons,
+      emptyPerson,
       shouldDisplayPersonsList,
       shouldDisplayPersonsForm,
       onDisplayPersonsForm,
       onDisplayPersonsList,
+      onSaveForm,
     };
   },
 });

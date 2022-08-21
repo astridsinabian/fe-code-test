@@ -37,22 +37,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, PropType, ref } from "vue";
 
 import { IPerson } from "./types";
 
 export default defineComponent({
-  setup() {
-    const form = ref<IPerson>({
-      firstName: "",
-      lastName: "",
-      address: "",
-      phoneNumber: "",
-      family: "",
-    });
+  props: {
+    emptyPerson: {
+      type: Object as PropType<IPerson>,
+      required: true,
+    },
+  },
+  setup(props, context) {
+    const form = ref<IPerson>(props.emptyPerson);
 
     function onSubmit(): void {
-      console.log("form", form);
+      context.emit("save-form", form.value);
     }
 
     return { form, onSubmit };
