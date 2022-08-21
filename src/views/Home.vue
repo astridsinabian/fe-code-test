@@ -4,7 +4,7 @@
     <button class="home-button" @click="onDisplayPersonsForm">Skapa ny person</button>
   </div>
 
-  <Persons v-if="shouldDisplayPersonsList" :persons="persons" />
+  <Persons v-if="shouldDisplayPersonsList" :persons="persons" @remove-person="onRemovePerson" />
 
   <PersonsForm v-if="shouldDisplayPersonsForm" :emptyPerson="emptyPerson" @save-form="onSaveForm" />
 </template>
@@ -52,6 +52,15 @@ export default defineComponent({
       }
     }
 
+    async function removePerson(id: string): Promise<void> {
+      try {
+        await axios.delete(`http://so.fthou.se:8080/api/person/${id}`);
+        await getPersons();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     function onDisplayPersonsForm(): void {
       shouldDisplayPersonsForm.value = !shouldDisplayPersonsForm.value;
       shouldDisplayPersonsList.value = false;
@@ -67,6 +76,10 @@ export default defineComponent({
       await addPerson(newPerson);
     }
 
+    async function onRemovePerson(id: string): Promise<void> {
+      await removePerson(id);
+    }
+
     return {
       persons,
       emptyPerson,
@@ -75,6 +88,7 @@ export default defineComponent({
       onDisplayPersonsForm,
       onDisplayPersonsList,
       onSaveForm,
+      onRemovePerson,
     };
   },
 });

@@ -8,8 +8,11 @@
       <th class="persons-table-header">Familjnummer</th>
     </tr>
 
-    <tr class="persons" v-for="(person, index) in persons" :key="index">
+    <tr v-for="person in persons" :key="person.id">
       <Person :person="person" />
+      <td>
+        <button class="persons-table-button" @click="onRemovePerson(person.id)">Ta bort</button>
+      </td>
     </tr>
   </table>
 </template>
@@ -30,6 +33,15 @@ export default defineComponent({
       required: true,
     },
   },
+  setup(props, context) {
+    function onRemovePerson(id: string): void {
+      context.emit("remove-person", id);
+    }
+
+    return {
+      onRemovePerson,
+    };
+  },
 });
 </script>
 
@@ -38,5 +50,18 @@ export default defineComponent({
   text-align: left;
   padding: 10px;
   background-color: #ececec;
+}
+
+.persons-table-button {
+  padding: 10px;
+  border: 1px solid #2b365b;
+  background-color: #ffffff;
+  transition: 300ms;
+
+  &:focus,
+  &:hover {
+    opacity: 0.7;
+    cursor: pointer;
+  }
 }
 </style>
