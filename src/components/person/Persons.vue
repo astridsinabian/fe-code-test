@@ -1,15 +1,19 @@
 <template>
-  <div v-for="(person, index) in persons" :key="index">
-    <div>{{ person.firstName }}</div>
+  <div class="persons" v-for="(person, index) in persons" :key="index">
+    <Person :person="person" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 
-import { IPerson } from "@/components/person/types";
+import { IPerson } from "./types";
+import Person from "./Person.vue";
 
 export default defineComponent({
+  components: {
+    Person,
+  },
   props: {
     persons: {
       type: Array as PropType<IPerson[]>,
@@ -19,4 +23,9 @@ export default defineComponent({
 });
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.persons {
+  display: flex;
+  flex-direction: column;
+}
+</style>
