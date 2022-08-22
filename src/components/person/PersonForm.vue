@@ -53,7 +53,7 @@ export default defineComponent({
     const form = ref<IPersonForm>(emptyPerson);
 
     function onSubmit(): void {
-      context.emit("save-person-form", form.value);
+      context.emit("save-person", form.value);
       form.value = emptyPerson;
     }
 

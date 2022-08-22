@@ -6,13 +6,13 @@
     <button class="home-button" @click="onDisplayFamilyForm">Skapa ny familj</button>
   </div>
 
-  <Persons v-if="shouldDisplayPersonsList" :persons="persons" @remove-person="removePerson" />
+  <Persons v-if="shouldDisplayPersonsList" :persons="persons" @remove-person="onRemovePerson" />
 
-  <Families v-if="shouldDisplayFamiliesList" :families="families" />
+  <Families v-if="shouldDisplayFamiliesList" :families="families" @remove-family="onRemoveFamily" />
 
-  <PersonForm v-if="shouldDisplayPersonForm" @save-person-form="addPerson" />
+  <PersonForm v-if="shouldDisplayPersonForm" @save-person="onSavePerson" />
 
-  <FamilyForm v-if="shouldDisplayFamilyForm" @save-family-form="addFamily" />
+  <FamilyForm v-if="shouldDisplayFamilyForm" @save-family="onSaveFamily" />
 </template>
 
 <script lang="ts">
@@ -60,7 +60,7 @@ export default defineComponent({
       }
     }
 
-    async function addPerson(newPerson: IPersonForm): Promise<void> {
+    async function onSavePerson(newPerson: IPersonForm): Promise<void> {
       try {
         await axios.post("http://so.fthou.se:8080/api/person", newPerson);
         await getPersons();
@@ -69,7 +69,7 @@ export default defineComponent({
       }
     }
 
-    async function addFamily(newFamily: IFamilyForm): Promise<void> {
+    async function onSaveFamily(newFamily: IFamilyForm): Promise<void> {
       try {
         await axios.post("http://so.fthou.se:8080/api/family", newFamily);
         await getFamilies();
@@ -78,10 +78,19 @@ export default defineComponent({
       }
     }
 
-    async function removePerson(id: string): Promise<void> {
+    async function onRemovePerson(id: string): Promise<void> {
       try {
-        const response = await axios.delete(`http://so.fthou.se:8080/api/person/${id}`);
+        await axios.delete(`http://so.fthou.se:8080/api/person/${id}`);
         await getPersons();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    async function onRemoveFamily(id: string): Promise<void> {
+      try {
+        await axios.delete(`http://so.fthou.se:8080/api/family/${id}`);
+        await getFamilies();
       } catch (error) {
         console.error(error);
       }
@@ -128,9 +137,10 @@ export default defineComponent({
       onDisplayPersonsList,
       onDisplayFamiliesList,
       onDisplayFamilyForm,
-      addPerson,
-      addFamily,
-      removePerson,
+      onSavePerson,
+      onSaveFamily,
+      onRemovePerson,
+      onRemoveFamily,
     };
   },
 });

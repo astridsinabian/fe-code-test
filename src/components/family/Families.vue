@@ -8,6 +8,9 @@
 
     <tr v-for="family in families" :key="family.id">
       <Family :family="family" />
+      <td>
+        <button class="families-table-button" @click="onRemoveFamily(family.id)">Ta bort</button>
+      </td>
     </tr>
   </table>
 </template>
@@ -27,6 +30,15 @@ export default defineComponent({
       type: Array as PropType<IFamily[]>,
       required: true,
     },
+  },
+  setup(props, context) {
+    function onRemoveFamily(id: string): void {
+      context.emit("remove-family", id);
+    }
+
+    return {
+      onRemoveFamily,
+    };
   },
 });
 </script>

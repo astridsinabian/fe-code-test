@@ -37,7 +37,6 @@ export default defineComponent({
   setup(props, context) {
     function onRemovePerson(id: string): void {
       context.emit("remove-person", id);
-      console.log("id", id);
     }
 
     return {

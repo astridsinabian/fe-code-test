@@ -24,7 +24,7 @@ export default defineComponent({
     const form = ref<IFamilyForm>(emptyFamily);
 
     function onSubmit(): void {
-      context.emit("save-family-form", form.value);
+      context.emit("save-family", form.value);
     }
 
     return { form, onSubmit };
