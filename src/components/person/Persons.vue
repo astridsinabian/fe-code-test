@@ -1,6 +1,7 @@
 <template>
   <table>
     <tr>
+      <th class="persons-table-header">Id</th>
       <th class="persons-table-header">Förnamn</th>
       <th class="persons-table-header">Efternamn</th>
       <th class="persons-table-header">Telefonnummer</th>
@@ -36,6 +37,7 @@ export default defineComponent({
   setup(props, context) {
     function onRemovePerson(id: string): void {
       context.emit("remove-person", id);
+      console.log("id", id);
     }
 
     return {

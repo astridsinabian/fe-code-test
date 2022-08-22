@@ -1,7 +1,17 @@
-export interface IPerson {
+export interface IPersonForm {
   firstName: string;
   lastName: string;
   phoneNumber: string;
   address: string;
   family: string;
+}
+
+export interface IPerson {
+  id: string;
+  userId: string;
+  createdAt: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  address: string;
 }

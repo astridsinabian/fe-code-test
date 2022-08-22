@@ -1,4 +1,5 @@
 <template>
+  <td class="person-table-data-cell">{{ person.id }}</td>
   <td class="person-table-data-cell">{{ person.firstName }}</td>
   <td class="person-table-data-cell">{{ person.lastName }}</td>
   <td class="person-table-data-cell">{{ person.phoneNumber }}</td>
@@ -24,6 +25,5 @@ export default defineComponent({
 <style scoped lang="scss">
 .person-table-data-cell {
   padding: 10px;
-  min-width: 150px;
 }
 </style>

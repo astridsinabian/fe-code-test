@@ -1,6 +1,7 @@
 <template>
   <table>
     <tr>
+      <th class="families-table-header">Id</th>
       <th class="families-table-header">Namn</th>
       <th class="families-table-header">Familjemedlemmar</th>
     </tr>

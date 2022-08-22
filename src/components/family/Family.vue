@@ -1,4 +1,5 @@
 <template>
+  <td class="family-table-data-cell">{{ family.id }}</td>
   <td class="family-table-data-cell">{{ family.name }}</td>
   <td class="family-table-data-cell">
     <span
@@ -29,7 +30,6 @@ export default defineComponent({
 <style scoped lang="scss">
 .family-table-data-cell {
   padding: 10px;
-  min-width: 150px;
 }
 
 .family-table-data-cell-name {

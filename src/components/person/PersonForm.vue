@@ -39,20 +39,22 @@
 <script lang="ts">
 import { defineComponent, PropType, ref } from "vue";
 
-import { IPerson } from "./types";
+import { IPersonForm } from "./types";
 
 export default defineComponent({
-  props: {
-    emptyPerson: {
-      type: Object as PropType<IPerson>,
-      required: true,
-    },
-  },
   setup(props, context) {
-    const form = ref<IPerson>(props.emptyPerson);
+    const emptyPerson: IPersonForm = {
+      firstName: "",
+      lastName: "",
+      address: "",
+      phoneNumber: "",
+      family: "",
+    };
+    const form = ref<IPersonForm>(emptyPerson);
 
     function onSubmit(): void {
-      context.emit("save-form", form.value);
+      context.emit("save-person-form", form.value);
+      form.value = emptyPerson;
     }
 
     return { form, onSubmit };
