@@ -6,27 +6,50 @@
       <th class="persons-table-header">Efternamn</th>
       <th class="persons-table-header">Telefonnummer</th>
       <th class="persons-table-header">Adress</th>
-      <th class="persons-table-header">Familjnummer</th>
     </tr>
 
     <tr v-for="person in persons" :key="person.id">
       <Person :person="person" />
       <td>
+        <button class="persons-table-button" @click="onEditPerson(person)">Ändra</button>
         <button class="persons-table-button" @click="onRemovePerson(person.id)">Ta bort</button>
       </td>
     </tr>
   </table>
+
+  <Modal :shouldDisplay="shouldDisplayModal">
+    <template #header>
+      <h3 class="persons-edit-form-heading">Ändra uppgifter</h3>
+    </template>
+
+    <template #body>
+      <form class="persons-edit-form" @submit="onSubmitForm">
+        <input class="persons-edit-form-input" v-model="editPerson.firstName" />
+        <input class="persons-edit-form-input" v-model="editPerson.lastName" />
+        <input class="persons-edit-form-input" v-model="editPerson.phoneNumber" />
+        <input class="persons-edit-form-input" v-model="editPerson.address" />
+
+        <div class="persons-edit-form-action-buttons">
+          <button class="persons-edit-form-action-button" type="submit">Spara</button>
+          <button class="persons-edit-form-action-button" @click="onCancelForm">Avbryt</button>
+        </div>
+      </form>
+    </template>
+  </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent, PropType, ref } from "vue";
 
 import { IPerson } from "./types";
 import Person from "./Person.vue";
 
+import Modal from "@/layout/Modal.vue";
+
 export default defineComponent({
   components: {
     Person,
+    Modal,
   },
   props: {
     persons: {
@@ -34,13 +57,36 @@ export default defineComponent({
       required: true,
     },
   },
+  emits: ["remove-person", "change-person"],
   setup(props, context) {
+    const shouldDisplayModal = ref<boolean>(false);
+    const editPerson = ref<IPerson | null>(null);
+
     function onRemovePerson(id: string): void {
       context.emit("remove-person", id);
     }
 
+    function onEditPerson(person: IPerson): void {
+      shouldDisplayModal.value = true;
+      editPerson.value = person;
+    }
+
+    function onSubmitForm(): void {
+      context.emit("change-person", editPerson);
+      shouldDisplayModal.value = false;
+    }
+
+    function onCancelForm(): void {
+      shouldDisplayModal.value = false;
+    }
+
     return {
+      editPerson,
+      shouldDisplayModal,
       onRemovePerson,
+      onEditPerson,
+      onSubmitForm,
+      onCancelForm,
     };
   },
 });
@@ -64,5 +110,42 @@ export default defineComponent({
     opacity: 0.7;
     cursor: pointer;
   }
+}
+
+.persons-edit-form-heading {
+  margin: 10px 0;
+}
+
+.persons-edit-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.persons-edit-form-action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin: 10px 0;
+}
+
+.persons-edit-form-action-button {
+  margin-left: 5px;
+  padding: 10px;
+  border: 1px solid #2b365b;
+  background-color: #ffffff;
+  transition: 300ms;
+
+  &:focus,
+  &:hover {
+    opacity: 0.7;
+    cursor: pointer;
+  }
+}
+
+.persons-edit-form-input {
+  padding: 10px;
+  margin-bottom: 5px;
+  border: none;
+  background-color: #ececec;
+  font-size: 16px;
 }
 </style>

@@ -4,7 +4,6 @@
   <td class="person-table-data-cell">{{ person.lastName }}</td>
   <td class="person-table-data-cell">{{ person.phoneNumber }}</td>
   <td class="person-table-data-cell">{{ person.address }}</td>
-  <td class="person-table-data-cell">{{ person.family }}</td>
 </template>
 
 <script lang="ts">

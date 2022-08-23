@@ -9,21 +9,42 @@
     <tr v-for="family in families" :key="family.id">
       <Family :family="family" />
       <td>
+        <button class="families-table-button" @click="onEditFamily(family)">Ändra</button>
         <button class="families-table-button" @click="onRemoveFamily(family.id)">Ta bort</button>
       </td>
     </tr>
   </table>
+
+  <Modal :shouldDisplay="shouldDisplayModal">
+    <template #header>
+      <h3 class="families-edit-form-heading">Ändra uppgifter</h3>
+    </template>
+
+    <template #body>
+      <form class="families-edit-form" @submit="onSubmitForm">
+        <input class="families-edit-form-input" v-model="editFamily.name" />
+
+        <div class="families-edit-form-action-buttons">
+          <button class="families-edit-form-action-button" type="submit">Spara</button>
+          <button class="families-edit-form-action-button" @click="onCancelForm">Avbryt</button>
+        </div>
+      </form>
+    </template>
+  </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent, PropType, ref } from "vue";
 
 import { IFamily } from "./types";
 import Family from "./Family.vue";
 
+import Modal from "@/layout/Modal.vue";
+
 export default defineComponent({
   components: {
     Family,
+    Modal,
   },
   props: {
     families: {
@@ -31,13 +52,36 @@ export default defineComponent({
       required: true,
     },
   },
+  emits: ["remove-family", "change-family"],
   setup(props, context) {
+    const shouldDisplayModal = ref<boolean>(false);
+    const editFamily = ref<IFamily | null>(null);
+
     function onRemoveFamily(id: string): void {
       context.emit("remove-family", id);
     }
 
+    function onEditFamily(family: IFamily): void {
+      shouldDisplayModal.value = true;
+      editFamily.value = family;
+    }
+
+    function onSubmitForm(): void {
+      context.emit("change-family", editFamily.value);
+      shouldDisplayModal.value = false;
+    }
+
+    function onCancelForm(): void {
+      shouldDisplayModal.value = false;
+    }
+
     return {
+      editFamily,
+      shouldDisplayModal,
       onRemoveFamily,
+      onEditFamily,
+      onSubmitForm,
+      onCancelForm,
     };
   },
 });
@@ -61,5 +105,42 @@ export default defineComponent({
     opacity: 0.7;
     cursor: pointer;
   }
+}
+
+.families-edit-form-heading {
+  margin: 10px 0;
+}
+
+.families-edit-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.families-edit-form-action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin: 10px 0;
+}
+
+.families-edit-form-action-button {
+  margin-left: 5px;
+  padding: 10px;
+  border: 1px solid #2b365b;
+  background-color: #ffffff;
+  transition: 300ms;
+
+  &:focus,
+  &:hover {
+    opacity: 0.7;
+    cursor: pointer;
+  }
+}
+
+.families-edit-form-input {
+  padding: 10px;
+  margin-bottom: 5px;
+  border: none;
+  background-color: #ececec;
+  font-size: 16px;
 }
 </style>

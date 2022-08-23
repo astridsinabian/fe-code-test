@@ -6,9 +6,19 @@
     <button class="home-button" @click="onDisplayFamilyForm">Skapa ny familj</button>
   </div>
 
-  <Persons v-if="shouldDisplayPersonsList" :persons="persons" @remove-person="onRemovePerson" />
+  <Persons
+    v-if="shouldDisplayPersonsList"
+    :persons="persons"
+    @remove-person="onRemovePerson"
+    @change-person="onChangePerson"
+  />
 
-  <Families v-if="shouldDisplayFamiliesList" :families="families" @remove-family="onRemoveFamily" />
+  <Families
+    v-if="shouldDisplayFamiliesList"
+    :families="families"
+    @remove-family="onRemoveFamily"
+    @change-family="onChangeFamily"
+  />
 
   <PersonForm v-if="shouldDisplayPersonForm" @save-person="onSavePerson" />
 
@@ -96,6 +106,14 @@ export default defineComponent({
       }
     }
 
+    function onChangePerson(editPerson: IPerson): void {
+      console.log("change", editPerson);
+    }
+
+    function onChangeFamily(editFamily: IFamily): void {
+      console.log("change", editFamily);
+    }
+
     function onDisplayPersonForm(): void {
       shouldDisplayPersonForm.value = !shouldDisplayPersonForm.value;
       shouldDisplayPersonsList.value = false;
@@ -141,6 +159,8 @@ export default defineComponent({
       onSaveFamily,
       onRemovePerson,
       onRemoveFamily,
+      onChangeFamily,
+      onChangePerson,
     };
   },
 });
