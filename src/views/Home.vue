@@ -45,6 +45,7 @@ export default defineComponent({
     FamilyForm,
   },
   setup() {
+    const url = "http://so.fthou.se:8080"; // Proxy config in vue.config.js not working, created varible instead
     const persons = ref<IPerson[]>([]);
     const families = ref<IFamily[]>([]);
     const shouldDisplayPersonsList = ref<boolean>(false);
@@ -54,7 +55,7 @@ export default defineComponent({
 
     async function getPersons(): Promise<void> {
       try {
-        const response = await axios.get("http://so.fthou.se:8080/api/persons");
+        const response = await axios.get(`${url}/api/persons`);
         persons.value = response.data;
       } catch (error) {
         console.error(error);
@@ -63,7 +64,7 @@ export default defineComponent({
 
     async function getFamilies(): Promise<void> {
       try {
-        const response = await axios.get("http://so.fthou.se:8080/api/families");
+        const response = await axios.get(`${url}/api/families`);
         families.value = response.data;
       } catch (error) {
         console.error(error);
@@ -72,7 +73,7 @@ export default defineComponent({
 
     async function onSavePerson(newPerson: IPersonForm): Promise<void> {
       try {
-        await axios.post("http://so.fthou.se:8080/api/person", newPerson);
+        await axios.post(`${url}/api/person`, newPerson);
         await getPersons();
       } catch (error) {
         console.error(error);
@@ -81,7 +82,7 @@ export default defineComponent({
 
     async function onSaveFamily(newFamily: IFamilyForm): Promise<void> {
       try {
-        await axios.post("http://so.fthou.se:8080/api/family", newFamily);
+        await axios.post(`${url}/api/family`, newFamily);
         await getFamilies();
       } catch (error) {
         console.error(error);
@@ -90,7 +91,7 @@ export default defineComponent({
 
     async function onRemovePerson(id: string): Promise<void> {
       try {
-        await axios.delete(`http://so.fthou.se:8080/api/person/${id}`);
+        await axios.delete(`${url}/api/person/${id}`);
         await getPersons();
       } catch (error) {
         console.error(error);
@@ -99,7 +100,7 @@ export default defineComponent({
 
     async function onRemoveFamily(id: string): Promise<void> {
       try {
-        await axios.delete(`http://so.fthou.se:8080/api/family/${id}`);
+        await axios.delete(`${url}/api/family/${id}`);
         await getFamilies();
       } catch (error) {
         console.error(error);

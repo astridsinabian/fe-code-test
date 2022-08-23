@@ -2,14 +2,13 @@
   <div class="family-form-container">
     <form class="family-form" @submit.prevent="onSubmit">
       <input class="family-form-input" v-model="form.familyName" type="text" placeholder="Namn" />
-
       <button class="family-form-button" type="submit">Lägg till</button>
     </form>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from "vue";
+import { defineComponent, ref } from "vue";
 
 import { IFamilyForm } from "./types";
 
