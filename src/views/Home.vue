@@ -9,6 +9,7 @@
   <Persons
     v-if="shouldDisplayPersonsList"
     :persons="persons"
+    :families="families"
     @remove-person="onRemovePerson"
     @change-person="onChangePerson"
   />
@@ -31,7 +32,7 @@ import axios from "axios";
 
 import Persons from "@/components/person/Persons.vue";
 import PersonForm from "@/components/person/PersonForm.vue";
-import { IPerson, IPersonForm } from "@/components/person/types";
+import { IPerson, IPersonForm, IPersonToFamilyForm } from "@/components/person/types";
 
 import Families from "@/components/family/Families.vue";
 import FamilyForm from "@/components/family/FamilyForm.vue";
@@ -107,12 +108,23 @@ export default defineComponent({
       }
     }
 
-    function onChangePerson(editPerson: IPerson): void {
-      console.log("change", editPerson);
+    async function onChangePerson(person: IPersonToFamilyForm): Promise<void> {
+      try {
+        await axios.patch(`${url}/api/family/addPerson`, person);
+        await getPersons();
+      } catch (error) {
+        console.error(error);
+      }
     }
 
-    function onChangeFamily(editFamily: IFamily): void {
-      console.log("change", editFamily);
+    async function onChangeFamily(editFamily: IFamily, familyMember: IPerson): Promise<void> {
+      try {
+        await axios.patch(`${url}/api/family/${editFamily.id}/removePerson/${familyMember.id}`);
+        await getPersons();
+        await getFamilies();
+      } catch (error) {
+        console.error(error);
+      }
     }
 
     function onDisplayPersonForm(): void {
@@ -131,6 +143,7 @@ export default defineComponent({
 
     async function onDisplayPersonsList(): Promise<void> {
       await getPersons();
+      await getFamilies();
       shouldDisplayPersonsList.value = !shouldDisplayPersonsList.value;
       shouldDisplayPersonForm.value = false;
       shouldDisplayFamiliesList.value = false;

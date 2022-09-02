@@ -15,3 +15,9 @@ export interface IPerson {
   phoneNumber: string;
   address: string;
 }
+
+export interface IPersonToFamilyForm {
+  familyName: string;
+  familyId?: number;
+  personId?: number;
+}

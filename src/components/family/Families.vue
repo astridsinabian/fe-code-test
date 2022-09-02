@@ -22,7 +22,14 @@
 
     <template #body>
       <form class="families-edit-form" @submit="onSubmitForm">
-        <input class="families-edit-form-input" v-model="editFamily.name" />
+        <span>{{ editFamily.name }}</span>
+
+        <ul>
+          <li v-for="familyMember in editFamily.familyMembers" :key="familyMember.id">
+            <span>{{ familyMember.firstName }} {{ familyMember.lastName }}</span>
+            <input type="radio" v-model="selectedFamilyMember" :value="familyMember" />
+          </li>
+        </ul>
 
         <div class="families-edit-form-action-buttons">
           <button class="families-edit-form-action-button" type="submit">Spara</button>
@@ -34,12 +41,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from "vue";
+import { defineComponent, onMounted, PropType, ref } from "vue";
 
 import { IFamily } from "./types";
 import Family from "./Family.vue";
 
 import Modal from "@/layout/Modal.vue";
+import { IPerson } from "../person/types";
 
 export default defineComponent({
   components: {
@@ -56,6 +64,7 @@ export default defineComponent({
   setup(props, context) {
     const shouldDisplayModal = ref<boolean>(false);
     const editFamily = ref<IFamily | null>(null);
+    const selectedFamilyMember = ref<IPerson>();
 
     function onRemoveFamily(id: string): void {
       context.emit("remove-family", id);
@@ -67,7 +76,7 @@ export default defineComponent({
     }
 
     function onSubmitForm(): void {
-      context.emit("change-family", editFamily.value);
+      context.emit("change-family", editFamily.value, selectedFamilyMember.value);
       shouldDisplayModal.value = false;
     }
 
@@ -78,6 +87,7 @@ export default defineComponent({
     return {
       editFamily,
       shouldDisplayModal,
+      selectedFamilyMember,
       onRemoveFamily,
       onEditFamily,
       onSubmitForm,

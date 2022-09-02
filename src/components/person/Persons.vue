@@ -24,10 +24,13 @@
 
     <template #body>
       <form class="persons-edit-form" @submit="onSubmitForm">
-        <input class="persons-edit-form-input" v-model="editPerson.firstName" />
-        <input class="persons-edit-form-input" v-model="editPerson.lastName" />
-        <input class="persons-edit-form-input" v-model="editPerson.phoneNumber" />
-        <input class="persons-edit-form-input" v-model="editPerson.address" />
+        <span>Person ID: {{ editPersonId }}</span>
+
+        <select v-model="selectedFamily">
+          <option v-for="family in families" :key="family.id" :value="family">
+            {{ family.name }}
+          </option>
+        </select>
 
         <div class="persons-edit-form-action-buttons">
           <button class="persons-edit-form-action-button" type="submit">Spara</button>
@@ -41,10 +44,11 @@
 <script lang="ts">
 import { defineComponent, PropType, ref } from "vue";
 
-import { IPerson } from "./types";
+import { IPerson, IPersonToFamilyForm } from "./types";
 import Person from "./Person.vue";
 
 import Modal from "@/layout/Modal.vue";
+import { IFamily } from "../family/types";
 
 export default defineComponent({
   components: {
@@ -56,11 +60,24 @@ export default defineComponent({
       type: Array as PropType<IPerson[]>,
       required: true,
     },
+    families: {
+      type: Array as PropType<IFamily[]>,
+      required: true,
+    },
   },
   emits: ["remove-person", "change-person"],
   setup(props, context) {
     const shouldDisplayModal = ref<boolean>(false);
-    const editPerson = ref<IPerson | null>(null);
+    const selectedFamily = ref({
+      id: 0,
+      name: "",
+    });
+    const editPersonId = ref<string>("");
+    const editPerson = ref<IPersonToFamilyForm>({
+      personId: 0,
+      familyName: "",
+      familyId: 0,
+    });
 
     function onRemovePerson(id: string): void {
       context.emit("remove-person", id);
@@ -68,11 +85,16 @@ export default defineComponent({
 
     function onEditPerson(person: IPerson): void {
       shouldDisplayModal.value = true;
-      editPerson.value = person;
+      editPersonId.value = person.id;
     }
 
     function onSubmitForm(): void {
-      context.emit("change-person", editPerson);
+      context.emit("change-person", {
+        personId: editPersonId.value,
+        familyId: selectedFamily.value.id,
+        familyName: selectedFamily.value.name,
+      });
+
       shouldDisplayModal.value = false;
     }
 
@@ -82,7 +104,9 @@ export default defineComponent({
 
     return {
       editPerson,
+      editPersonId,
       shouldDisplayModal,
+      selectedFamily,
       onRemovePerson,
       onEditPerson,
       onSubmitForm,
