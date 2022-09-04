@@ -43,18 +43,23 @@ import { IPersonForm } from "./types";
 
 export default defineComponent({
   setup(props, context) {
-    const emptyPerson: IPersonForm = {
+    const form = ref<IPersonForm>({
       firstName: "",
       lastName: "",
       address: "",
       phoneNumber: "",
       family: "",
-    };
-    const form = ref<IPersonForm>(emptyPerson);
+    });
 
     function onSubmit(): void {
       context.emit("save-person", form.value);
-      form.value = emptyPerson;
+      form.value = {
+        firstName: "",
+        lastName: "",
+        address: "",
+        phoneNumber: "",
+        family: "",
+      };
     }
 
     return { form, onSubmit };

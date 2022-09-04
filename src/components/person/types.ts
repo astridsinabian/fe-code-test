@@ -16,7 +16,7 @@ export interface IPerson {
   address: string;
 }
 
-export interface IPersonToFamilyForm {
+export interface IPersonFamilyForm {
   familyName: string;
   familyId?: number;
   personId?: number;

@@ -19,22 +19,24 @@
 
   <Modal :shouldDisplay="shouldDisplayModal">
     <template #header>
-      <h3 class="persons-edit-form-heading">Ändra uppgifter</h3>
+      <h2 class="persons-modal-header-heading">Ändra uppgifter</h2>
     </template>
 
     <template #body>
-      <form class="persons-edit-form" @submit="onSubmitForm">
-        <span>Person ID: {{ editPersonId }}</span>
+      <form class="persons-modal-form" @submit="onSubmitForm">
+        <div>
+          <strong>Person ID: {{ editPersonId }}</strong>
+        </div>
 
-        <select v-model="selectedFamily">
+        <select v-model="selectedFamily" class="persons-modal-form-dropdown">
           <option v-for="family in families" :key="family.id" :value="family">
             {{ family.name }}
           </option>
         </select>
 
-        <div class="persons-edit-form-action-buttons">
-          <button class="persons-edit-form-action-button" type="submit">Spara</button>
-          <button class="persons-edit-form-action-button" @click="onCancelForm">Avbryt</button>
+        <div class="persons-modal-form-action-buttons">
+          <button class="persons-modal-form-action-button" type="submit">Spara</button>
+          <button class="persons-modal-form-action-button" @click="onCancelForm">Avbryt</button>
         </div>
       </form>
     </template>
@@ -44,7 +46,7 @@
 <script lang="ts">
 import { defineComponent, PropType, ref } from "vue";
 
-import { IPerson, IPersonToFamilyForm } from "./types";
+import { IPerson, IPersonFamilyForm } from "./types";
 import Person from "./Person.vue";
 
 import Modal from "@/layout/Modal.vue";
@@ -73,7 +75,7 @@ export default defineComponent({
       name: "",
     });
     const editPersonId = ref<string>("");
-    const editPerson = ref<IPersonToFamilyForm>({
+    const editPerson = ref<IPersonFamilyForm>({
       personId: 0,
       familyName: "",
       familyId: 0,
@@ -125,6 +127,7 @@ export default defineComponent({
 
 .persons-table-button {
   padding: 10px;
+  margin-right: 5px;
   border: 1px solid #2b365b;
   background-color: #ffffff;
   transition: 300ms;
@@ -136,22 +139,27 @@ export default defineComponent({
   }
 }
 
-.persons-edit-form-heading {
+.persons-modal-header-heading {
   margin: 10px 0;
 }
 
-.persons-edit-form {
+.persons-modal-form {
   display: flex;
   flex-direction: column;
 }
 
-.persons-edit-form-action-buttons {
+.persons-modal-form-dropdown {
+  padding: 5px;
+  margin: 10px 0;
+}
+
+.persons-modal-form-action-buttons {
   display: flex;
   justify-content: flex-end;
   margin: 10px 0;
 }
 
-.persons-edit-form-action-button {
+.persons-modal-form-action-button {
   margin-left: 5px;
   padding: 10px;
   border: 1px solid #2b365b;
@@ -165,7 +173,7 @@ export default defineComponent({
   }
 }
 
-.persons-edit-form-input {
+.persons-modal-form-input {
   padding: 10px;
   margin-bottom: 5px;
   border: none;

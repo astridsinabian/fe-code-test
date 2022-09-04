@@ -14,16 +14,19 @@ import { IFamilyForm } from "./types";
 
 export default defineComponent({
   setup(props, context) {
-    const emptyFamily: IFamilyForm = {
+    const form = ref<IFamilyForm>({
       familyName: "",
       familyId: "",
       personId: "",
-    };
-
-    const form = ref<IFamilyForm>(emptyFamily);
+    });
 
     function onSubmit(): void {
       context.emit("save-family", form.value);
+      form.value = {
+        familyName: "",
+        familyId: "",
+        personId: "",
+      };
     }
 
     return { form, onSubmit };

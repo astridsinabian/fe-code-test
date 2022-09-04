@@ -17,23 +17,35 @@
 
   <Modal :shouldDisplay="shouldDisplayModal">
     <template #header>
-      <h3 class="families-edit-form-heading">Ändra uppgifter</h3>
+      <h2 class="families-modal-header-heading">Ändra uppgifter</h2>
+      <div class="families-modal-header-text">
+        <div>
+          <strong>Familj: {{ editFamily.name }}</strong>
+        </div>
+        <div>
+          <i>Radera familjemedlem genom att klicka i och spara.</i>
+        </div>
+      </div>
     </template>
 
     <template #body>
-      <form class="families-edit-form" @submit="onSubmitForm">
-        <span>{{ editFamily.name }}</span>
-
-        <ul>
-          <li v-for="familyMember in editFamily.familyMembers" :key="familyMember.id">
+      <form class="families-modal-form" @submit="onSubmitForm">
+        <ul v-if="editFamily.familyMembers.length > 0" class="families-modal-form-list">
+          <li
+            v-for="familyMember in editFamily.familyMembers"
+            :key="familyMember.id"
+            class="families-modal-form-list-item"
+          >
             <span>{{ familyMember.firstName }} {{ familyMember.lastName }}</span>
             <input type="radio" v-model="selectedFamilyMember" :value="familyMember" />
           </li>
         </ul>
 
-        <div class="families-edit-form-action-buttons">
-          <button class="families-edit-form-action-button" type="submit">Spara</button>
-          <button class="families-edit-form-action-button" @click="onCancelForm">Avbryt</button>
+        <div v-else>Har inga familjemedlemmar</div>
+
+        <div class="families-modal-form-action-buttons">
+          <button class="families-modal-form-action-button" type="submit">Spara</button>
+          <button class="families-modal-form-action-button" @click="onCancelForm">Avbryt</button>
         </div>
       </form>
     </template>
@@ -41,7 +53,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType, ref } from "vue";
+import { defineComponent, PropType, ref } from "vue";
 
 import { IFamily } from "./types";
 import Family from "./Family.vue";
@@ -106,6 +118,7 @@ export default defineComponent({
 
 .families-table-button {
   padding: 10px;
+  margin-right: 5px;
   border: 1px solid #2b365b;
   background-color: #ffffff;
   transition: 300ms;
@@ -117,22 +130,37 @@ export default defineComponent({
   }
 }
 
-.families-edit-form-heading {
-  margin: 10px 0;
+.families-modal-header-heading {
+  padding: 10px 0;
+  margin: 0;
 }
 
-.families-edit-form {
+.families-modal-header-text {
+  padding: 10px 0;
+}
+
+.families-modal-form {
   display: flex;
   flex-direction: column;
 }
 
-.families-edit-form-action-buttons {
+.families-modal-form-list {
+  list-style: none;
+  padding: 5px 0;
+  margin: 0;
+}
+
+.families-modal-form-list-item {
+  padding: 5px 0;
+}
+
+.families-modal-form-action-buttons {
   display: flex;
   justify-content: flex-end;
   margin: 10px 0;
 }
 
-.families-edit-form-action-button {
+.families-modal-form-action-button {
   margin-left: 5px;
   padding: 10px;
   border: 1px solid #2b365b;
@@ -146,7 +174,7 @@ export default defineComponent({
   }
 }
 
-.families-edit-form-input {
+.families-modal-form-input {
   padding: 10px;
   margin-bottom: 5px;
   border: none;

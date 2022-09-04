@@ -1,9 +1,9 @@
 <template>
-  <div>
-    <button class="home-button" @click="onDisplayPersonsList">Visa personer</button>
-    <button class="home-button" @click="onDisplayFamiliesList">Visa familjer</button>
-    <button class="home-button" @click="onDisplayPersonForm">Skapa ny person</button>
-    <button class="home-button" @click="onDisplayFamilyForm">Skapa ny familj</button>
+  <div class="home-tabs">
+    <button class="home-tab" @click="onDisplayPersonsList">Visa personer</button>
+    <button class="home-tab" @click="onDisplayFamiliesList">Visa familjer</button>
+    <button class="home-tab" @click="onDisplayPersonForm">Skapa ny person</button>
+    <button class="home-tab" @click="onDisplayFamilyForm">Skapa ny familj</button>
   </div>
 
   <Persons
@@ -32,7 +32,7 @@ import axios from "axios";
 
 import Persons from "@/components/person/Persons.vue";
 import PersonForm from "@/components/person/PersonForm.vue";
-import { IPerson, IPersonForm, IPersonToFamilyForm } from "@/components/person/types";
+import { IPerson, IPersonForm, IPersonFamilyForm } from "@/components/person/types";
 
 import Families from "@/components/family/Families.vue";
 import FamilyForm from "@/components/family/FamilyForm.vue";
@@ -108,7 +108,7 @@ export default defineComponent({
       }
     }
 
-    async function onChangePerson(person: IPersonToFamilyForm): Promise<void> {
+    async function onChangePerson(person: IPersonFamilyForm): Promise<void> {
       try {
         await axios.patch(`${url}/api/family/addPerson`, person);
         await getPersons();
@@ -181,12 +181,15 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.home-button {
+.home-tabs {
+  background-color: #2b365b;
+}
+
+.home-tab {
   padding: 15px 10px;
   color: #ffffff;
   background-color: #2b365b;
   border: 1px solid #2b365b;
-  margin-right: 1px;
   transition: 300ms;
   font-size: 16px;
 
